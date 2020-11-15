@@ -1,3 +1,4 @@
+import { HttpClient }                   from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { GlobalParentComponent }        from '../../common/global-parent/global-parent.component';
 import { Measure }                      from '../../common/models/measure';
@@ -17,13 +18,15 @@ export class OscsillatorComponent
 	oscillator: number;
 	backgroundColor                                                = '#ffffff';
 	private side                                                   = 0;
+	private audioContext                                           = new AudioContext();
+	private audioBuffer: AudioBuffer;
 
 	@ViewChild('measureNumber') measureNumberEl;
 	@ViewChild('metronome') metronomeEl;
 	@ViewChild('indicator') indicatorEl;
 	@ViewChild('click') clickEl;
 
-	constructor(private measureService: MeasuresService)
+	constructor(private measureService: MeasuresService, private http: HttpClient)
 	{
 		super();
 	}
@@ -38,6 +41,30 @@ export class OscsillatorComponent
 												   })
 		];
 		this.subscriptions.push(...subscriptions);
+
+		this.http.get('/assets/click.mp3',
+					  {
+						  responseType: 'arraybuffer',
+						  headers:      {
+							  'Content-Type': 'Content-Type: audio/mpeg',
+						  }
+					  }).subscribe(data =>
+								   {
+									   this.audioContext.decodeAudioData(data,
+																		 (buffer) =>
+																		 {
+																			 if (buffer)
+																			 {
+																				 this.audioBuffer = buffer; // keep a reference to decoded buffer
+																			 }
+																		 });
+								   });
+	}
+
+	startOscillator()
+	{
+
+		this.tick();
 	}
 
 	stopOscillator()
@@ -62,15 +89,13 @@ export class OscsillatorComponent
 		this.currentTime = this.measures.length ? {
 			cycle:   1,
 			measure: this.measures[0],
-			time:    1
+			time:    0
 		} : null;
 	}
 
 	tick()
 	{
-		const duration                         = 60000 / this.currentTime.measure.beat;
-		this.clickEl.nativeElement.currentTime = 0;
-		this.clickEl.nativeElement.play();
+		const duration                                           = 60000 / this.currentTime.measure.beat;
 		this.measureNumberEl.nativeElement.style.backgroundColor = this.currentTime.measure.color;
 		this.metronomeEl.nativeElement.classList.remove('is-playing-left');
 		this.metronomeEl.nativeElement.classList.remove('is-playing-right');
@@ -89,6 +114,7 @@ export class OscsillatorComponent
 
 		this.oscillator = window.setTimeout(() =>
 											{
+												this.play();
 												this.nextTime();
 											},
 											60000 / this.currentTime.measure.beat);
@@ -126,5 +152,13 @@ export class OscsillatorComponent
 	{
 		this.currentTime.cycle++;
 		this.tick();
+	}
+
+	private play()
+	{
+		const src  = this.audioContext.createBufferSource();
+		src.buffer = this.audioBuffer;
+		src.connect(this.audioContext.destination);
+		src.start(0);
 	}
 }

@@ -1,6 +1,7 @@
 import { NgxSliderModule }       from '@angular-slider/ngx-slider';
 import { DragDropModule }        from '@angular/cdk/drag-drop';
 import { CommonModule }          from '@angular/common';
+import { HttpClientModule }      from '@angular/common/http';
 import { NgModule }              from '@angular/core';
 import { FormsModule }           from '@angular/forms';
 import { ColorPickerModule }     from 'ngx-color-picker';
@@ -18,6 +19,7 @@ import { PageComponent }          from './page/page.component';
 			  ],
 			  imports:      [
 				  CommonModule,
+				  HttpClientModule,
 				  MetronomeRoutingModule,
 				  FormsModule,
 				  ColorPickerModule,

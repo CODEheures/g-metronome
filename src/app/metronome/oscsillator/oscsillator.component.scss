@@ -62,13 +62,6 @@
 
 .metronome.is-playing-right,
 .metronome.is-playing-left {
-	.metronome__blink {
-		animation-name:            blink;
-		animation-iteration-count: 1;
-		animation-direction:       normal;
-		animation-timing-function: ease-in-out;
-	}
-
 	.metronome__indicator {
 		animation-name:            metronome-right;
 		animation-iteration-count: 1;
