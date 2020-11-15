@@ -1,0 +1,44 @@
+<div class="row">
+	<div class="col-sm">
+		<div class="card text-center">
+			<div #cardHeader class="card-header">
+				<h1 *ngIf="!measures.length">Aucune mesure</h1>
+				<div class="row">
+					<div class="col-sm">Cycle</div>
+					<div class="col-sm">Mesure</div>
+					<div class="col-sm">Temps</div>
+				</div>
+				<div class="row">
+					<div class="col-sm">
+						<div class="btnSquare">{{ measures.length ? currentTime.cycle : 0 }}</div>
+					</div>
+					<div class="col-sm">
+						<div #measureNumber class="btnSquare">{{ measures.length ? measures.indexOf(currentTime.measure) + 1 : 0 }}</div>
+					</div>
+					<div class="col-sm">
+						<div class="btnSquare">{{ measures.length ? currentTime.time : 0 }}</div>
+					</div>
+				</div>
+			</div>
+			<div #cardBody class="card-body">
+				<p class="lead" *ngIf="currentTime?.measure">BPM {{ currentTime.measure.beat }}</p>
+				<div #metronome class="metronome">
+					<div #viz class="metronome__viz">
+						<div #line class="metronome__line"></div>
+						<div #indicator class="metronome__indicator"></div>
+					</div>
+				</div>
+			</div>
+			<div #cardFooter class="card-footer text-muted">
+				<div class="btn-group" role="group" aria-label="Basic example">
+					<button type="button" class="btn btn-primary" (click)="startOscillator()" [disabled]="oscillator || !measures.length"><i class="fas fa-play"></i></button>
+					<button type="button" class="btn btn-primary" (click)="stopOscillator()" [disabled]="!oscillator"><i class="fas fa-stop"></i></button>
+					<button type="button" class="btn btn-primary" (click)="restartOscillator()" [disabled]="!measures.length || isFirstTick()"><i class="fas fa-fast-backward"></i>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<audio #click id="click" preload="auto" src="/assets/click.mp3"></audio>

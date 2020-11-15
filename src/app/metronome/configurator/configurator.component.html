@@ -1,0 +1,37 @@
+<p>Mesures:</p>
+<table class="table table-sm">
+	<thead>
+	<tr>
+		<th scope="col">#</th>
+		<th scope="col">BPM</th>
+		<th scope="col">Temps</th>
+		<th scope="col">Couleur</th>
+		<th></th>
+	</tr>
+	</thead>
+	<tbody cdkDropList [cdkDropListData]="measures" (cdkDropListDropped)="drop($event)">
+	<tr *ngFor="let measure of measures; let index = index; let isFirst = first; let isLast = last" cdkDrag>
+		<th scope="row">{{ index + 1 }}</th>
+		<td>
+			<ngx-slider style="min-width: 150px" [options]="beatOptions" [(value)]="measure.beat"></ngx-slider>
+		</td>
+		<td>
+			<ngx-slider style="min-width: 150px" [options]="timesOptions" [(value)]="measure.times"></ngx-slider>
+		</td>
+		<td style="vertical-align: middle">
+			<div [(colorPicker)]="measure.color" [style.background]="measure.color" style="height: 30px; width: 100px; margin-top: 15px;"></div>
+		</td>
+		<td>
+			<button class="btn btn-danger mr-1" (click)="removeMeasure(measure)"><i class="fas fa-trash"></i></button>
+			<button style="cursor: move;" class="btn btn-primary" cdkDragHandle [disabled]="measures.length === 1"><i class="fas fa-arrows-alt-v"></i></button>
+		</td>
+	</tr>
+	</tbody>
+	<tfoot>
+	<tr>
+		<td colspan="5">
+			<button type="button" class="btn btn-primary btn-lg btn-block" (click)="addMeasure()">Ajouter une mesure</button>
+		</td>
+	</tr>
+	</tfoot>
+</table>
