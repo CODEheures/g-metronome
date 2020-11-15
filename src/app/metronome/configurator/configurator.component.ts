@@ -26,7 +26,7 @@ export class ConfiguratorComponent
 
 	ngOnInit(): void
 	{
-		const storedMeasures = Array.from(JSON.parse(localStorage.getItem('metronome')));
+		const storedMeasures = Array.from(JSON.parse(localStorage.getItem('metronome')) || []);
 		this.measureService.updateMeasures(storedMeasures.map(measure => Object.assign(new Measure(),
 																					   measure)));
 		const subscriptions = [
