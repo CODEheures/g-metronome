@@ -31,7 +31,7 @@
 			</div>
 			<div #cardFooter class="card-footer text-muted">
 				<div class="btn-group" role="group" aria-label="Basic example">
-					<button type="button" class="btn btn-primary" (click)="startOscillator()" [disabled]="oscillator || !measures.length"><i class="fas fa-play"></i></button>
+					<button type="button" class="btn btn-primary" (click)="tick()" [disabled]="oscillator || !measures.length"><i class="fas fa-play"></i></button>
 					<button type="button" class="btn btn-primary" (click)="stopOscillator()" [disabled]="!oscillator"><i class="fas fa-stop"></i></button>
 					<button type="button" class="btn btn-primary" (click)="restartOscillator()" [disabled]="!measures.length || isFirstTick()"><i class="fas fa-fast-backward"></i>
 					</button>

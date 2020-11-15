@@ -40,11 +40,6 @@ export class OscsillatorComponent
 		this.subscriptions.push(...subscriptions);
 	}
 
-	startOscillator()
-	{
-		this.tick();
-	}
-
 	stopOscillator()
 	{
 		clearTimeout(this.oscillator);
@@ -71,7 +66,7 @@ export class OscsillatorComponent
 		} : null;
 	}
 
-	private tick()
+	tick()
 	{
 		const duration                         = 60000 / this.currentTime.measure.beat;
 		this.clickEl.nativeElement.currentTime = 0;
