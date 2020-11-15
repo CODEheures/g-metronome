@@ -73,7 +73,9 @@ export class OscsillatorComponent
 
 	private tick()
 	{
-		const duration                                           = 60000 / this.currentTime.measure.beat;
+		const duration                         = 60000 / this.currentTime.measure.beat;
+		this.clickEl.nativeElement.currentTime = 0;
+		this.clickEl.nativeElement.play();
 		this.measureNumberEl.nativeElement.style.backgroundColor = this.currentTime.measure.color;
 		this.metronomeEl.nativeElement.classList.remove('is-playing-left');
 		this.metronomeEl.nativeElement.classList.remove('is-playing-right');
@@ -89,9 +91,6 @@ export class OscsillatorComponent
 			this.metronomeEl.nativeElement.classList.add('is-playing-left');
 			this.side = 0;
 		}
-
-		this.clickEl.nativeElement.currentTime = 0;
-		this.clickEl.nativeElement.play();
 
 		this.oscillator = window.setTimeout(() =>
 											{

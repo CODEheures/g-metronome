@@ -74,6 +74,11 @@ export class ConfiguratorComponent
 		moveItemInArray(this.measures,
 						event.previousIndex,
 						event.currentIndex);
+		this.updateMeasures();
+	}
+
+	updateMeasures()
+	{
 		this.measureService.updateMeasures(this.measures);
 	}
 

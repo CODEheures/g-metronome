@@ -13,13 +13,16 @@
 	<tr *ngFor="let measure of measures; let index = index; let isFirst = first; let isLast = last" cdkDrag>
 		<th scope="row">{{ index + 1 }}</th>
 		<td>
-			<ngx-slider style="min-width: 150px" [options]="beatOptions" [(value)]="measure.beat"></ngx-slider>
+			<ngx-slider (userChangeEnd)="updateMeasures()" style="min-width: 150px" [options]="beatOptions" [(value)]="measure.beat"></ngx-slider>
 		</td>
 		<td>
-			<ngx-slider style="min-width: 150px" [options]="timesOptions" [(value)]="measure.times"></ngx-slider>
+			<ngx-slider (userChangeEnd)="updateMeasures()" style="min-width: 150px" [options]="timesOptions" [(value)]="measure.times"></ngx-slider>
 		</td>
 		<td style="vertical-align: middle">
-			<div [(colorPicker)]="measure.color" [style.background]="measure.color" style="height: 30px; width: 100px; margin-top: 15px;"></div>
+			<div [(colorPicker)]="measure.color"
+			     (colorPickerChange)="updateMeasures()"
+			     [style.background]="measure.color"
+			     style="height: 30px; width: 100px; margin-top: 15px;"></div>
 		</td>
 		<td>
 			<button class="btn btn-danger mr-1" (click)="removeMeasure(measure)"><i class="fas fa-trash"></i></button>
