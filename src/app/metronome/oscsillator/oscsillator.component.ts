@@ -19,7 +19,8 @@ export class OscsillatorComponent
 	backgroundColor                                                = '#ffffff';
 	private side                                                   = 0;
 	private audioContext                                           = new AudioContext();
-	private audioBuffer: AudioBuffer;
+	private audioBufferClick: AudioBuffer;
+	private audioBufferTap: AudioBuffer;
 
 	@ViewChild('measureNumber') measureNumberEl;
 	@ViewChild('metronome') metronomeEl;
@@ -42,29 +43,24 @@ export class OscsillatorComponent
 		];
 		this.subscriptions.push(...subscriptions);
 
-		this.http.get('/assets/click.mp3',
-					  {
-						  responseType: 'arraybuffer',
-						  headers:      {
-							  'Content-Type': 'Content-Type: audio/mpeg',
-						  }
-					  }).subscribe(data =>
-								   {
-									   this.audioContext.decodeAudioData(data,
-																		 (buffer) =>
-																		 {
-																			 if (buffer)
-																			 {
-																				 this.audioBuffer = buffer; // keep a reference to decoded buffer
-																			 }
-																		 });
-								   });
+		this.getAudioBuffer('click.mp3');
+		this.getAudioBuffer('baguette.mp3');
 	}
 
 	startOscillator()
 	{
-
-		this.tick();
+		let count      = 4;
+		const interval = window.setInterval(() =>
+											{
+												this.play(this.audioBufferTap);
+												count--;
+												if (count === 0)
+												{
+													window.clearInterval(interval);
+													this.tick();
+												}
+											},
+											this.getDuration());
 	}
 
 	stopOscillator()
@@ -95,11 +91,10 @@ export class OscsillatorComponent
 
 	tick()
 	{
-		const duration                                           = 60000 / this.currentTime.measure.beat;
 		this.measureNumberEl.nativeElement.style.backgroundColor = this.currentTime.measure.color;
 		this.metronomeEl.nativeElement.classList.remove('is-playing-left');
 		this.metronomeEl.nativeElement.classList.remove('is-playing-right');
-		this.indicatorEl.nativeElement.style.animationDuration = duration + 'ms';
+		this.indicatorEl.nativeElement.style.animationDuration = this.getDuration() + 'ms';
 
 		if (this.side === 0)
 		{
@@ -114,10 +109,15 @@ export class OscsillatorComponent
 
 		this.oscillator = window.setTimeout(() =>
 											{
-												this.play();
+												this.play(this.audioBufferClick);
 												this.nextTime();
 											},
-											60000 / this.currentTime.measure.beat);
+											this.getDuration());
+	}
+
+	private getDuration()
+	{
+		return 60000 / this.currentTime.measure.beat;
 	}
 
 	private nextTime()
@@ -154,11 +154,40 @@ export class OscsillatorComponent
 		this.tick();
 	}
 
-	private play()
+	private play(audioBuffer: AudioBuffer)
 	{
 		const src  = this.audioContext.createBufferSource();
-		src.buffer = this.audioBuffer;
+		src.buffer = audioBuffer;
 		src.connect(this.audioContext.destination);
 		src.start(0);
+	}
+
+	private getAudioBuffer(fileName: string)
+	{
+		this.http.get('/assets/' + fileName,
+					  {
+						  responseType: 'arraybuffer',
+						  headers:      {
+							  'Content-Type': 'Content-Type: audio/mpeg',
+						  }
+					  }).subscribe(data =>
+								   {
+									   this.audioContext.decodeAudioData(data,
+																		 (buffer) =>
+																		 {
+																			 if (buffer)
+																			 {
+																				 switch (fileName)
+																				 {
+																					 case 'click.mp3':
+																						 this.audioBufferClick = buffer;
+																						 break;
+																					 case 'baguette.mp3':
+																						 this.audioBufferTap = buffer;
+																						 break;
+																				 }
+																			 }
+																		 });
+								   });
 	}
 }
