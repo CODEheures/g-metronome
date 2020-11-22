@@ -22,7 +22,8 @@ export class OscsillatorComponent
 	private audioBufferClick: AudioBuffer;
 	private audioBufferTap: AudioBuffer;
 
-	@ViewChild('measureNumber') measureNumberEl;
+	@ViewChild('cardHeader') cardHeaderEl;
+	@ViewChild('nextMeasure') nextMeasureEl;
 	@ViewChild('metronome') metronomeEl;
 	@ViewChild('indicator') indicatorEl;
 	@ViewChild('click') clickEl;
@@ -73,11 +74,12 @@ export class OscsillatorComponent
 	{
 		this.stopOscillator();
 		this.initCurrentTime();
+		this.reinitBackGrounds();
 	}
 
 	isFirstTick()
 	{
-		return this.currentTime && this.currentTime.cycle === 1 && this.measures.indexOf(this.currentTime.measure) === 0 && this.currentTime.time === 1;
+		return this.currentTime && this.currentTime.cycle === 1 && this.measures.indexOf(this.currentTime.measure) === 0 && this.currentTime.time === 0;
 	}
 
 	private initCurrentTime()
@@ -91,7 +93,8 @@ export class OscsillatorComponent
 
 	tick()
 	{
-		this.measureNumberEl.nativeElement.style.backgroundColor = this.currentTime.measure.color;
+		this.cardHeaderEl.nativeElement.style.backgroundColor  = this.currentTime.measure.color;
+		this.nextMeasureEl.nativeElement.style.backgroundColor = this.getNextMeasure().color;
 		this.metronomeEl.nativeElement.classList.remove('is-playing-left');
 		this.metronomeEl.nativeElement.classList.remove('is-playing-right');
 		this.indicatorEl.nativeElement.style.animationDuration = this.getDuration() + 'ms';
@@ -189,5 +192,27 @@ export class OscsillatorComponent
 																			 }
 																		 });
 								   });
+	}
+
+	getNextMeasureNumber(): number
+	{
+		return this.measures.indexOf(this.getNextMeasure()) + 1;
+	}
+
+	private getNextMeasure(): Measure
+	{
+		if (this.measures.indexOf(this.currentTime.measure) === this.measures.length - 1)
+		{
+			return this.measures[0];
+		}
+		else
+		{
+			return this.measures[this.measures.indexOf(this.currentTime.measure) + 1];
+		}
+	}
+
+	private reinitBackGrounds()
+	{
+		this.cardHeaderEl.nativeElement.style.backgroundColor = '';
 	}
 }

@@ -3,19 +3,22 @@
 		<div class="card text-center">
 			<div #cardHeader class="card-header">
 				<h1 *ngIf="!measures.length">Aucune mesure</h1>
-				<div class="row">
+				<div [class.text-white]="oscillator || !isFirstTick()" class="row">
 					<div class="col-sm">Cycle</div>
 					<div class="col-sm">Mesure</div>
 					<div class="col-sm">Temps</div>
 				</div>
 				<div class="row">
-					<div class="col-sm">
+					<div class="col-sm d-flex justify-content-center align-items-center">
 						<div class="btnSquare">{{ measures.length ? currentTime.cycle : 0 }}</div>
 					</div>
-					<div class="col-sm">
-						<div #measureNumber class="btnSquare">{{ measures.length ? measures.indexOf(currentTime.measure) + 1 : 0 }}</div>
+					<div class="col-sm d-flex justify-content-center align-items-center">
+						<div class="btnSquare btnLg">
+							{{ measures.length ? measures.indexOf(currentTime.measure) + 1 : 0 }}
+							<div #nextMeasure class="btnRound" [class.visible]="currentTime.time >= currentTime.measure.times - 2">{{ getNextMeasureNumber() }}</div>
+						</div>
 					</div>
-					<div class="col-sm">
+					<div class="col-sm d-flex justify-content-center align-items-center">
 						<div class="btnSquare">{{ measures.length ? currentTime.time : 0 }}</div>
 					</div>
 				</div>
